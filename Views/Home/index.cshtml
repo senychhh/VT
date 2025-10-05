@@ -1,0 +1,159 @@
+@{
+    Layout = null; // Отключаем использование шаблона
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Главная страница</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <a href="#" class="badge text-bg-dark text-decoration-none fs-6">Kolbasin</a>
+                <div class="navbar-nav">
+                    <a href="#" class="nav-item nav-link">ЛБ 1</a>
+                    <a href="#" class="nav-item nav-link">Каталог</a>
+                    <a href="#" class="nav-item nav-link">Администрирование</a>
+                </div>
+
+                <a href="#" class="navbar-text ms-auto ">
+                    00.0 руб <i class="fa-solid fa-cart-shopping"></i>(0)
+                </a>
+                <div class="dropdown ms-4 nav-color">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        user@gmail.com
+                        <img src="~/img/profile.png" width="30" alt="user" class="rounded" />
+                    </button>
+                    <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton">
+                        <li>
+                            <span class="dropdown-item-text text-center">
+                                <img src="~/img/profile.png" width="50" alt="user" class="rounded" />
+                                user@gmail.com
+                            </span>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider" />
+                        </li>
+                        <li>
+                            <form class="logoutForm" action="#" class="w-100" method="post">
+                                <button id="logout" type="submit"
+                                    class="nav-link btn btn-link text-dark w-100 text-center">Выйти</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <h2>Лабораторная работа</h2>
+        <h3>Список</h3>
+        <ol type="A">
+            <li>Элемент 1 списка</li>
+            <li>Элемент 2 списка</li>
+        </ol>
+        <hr>
+        <h3>Форма</h3>
+        <form method="get">
+                <fieldset class="row mb-3">
+                <div class="row mb-3">
+                    <div class="col-sm-10 offset-sm-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="checkbox1" id="gridCheck1">
+                            <label class="form-check-label" for="gridCheck1">
+                                checkbox 1
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-10 offset-sm-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="checkbox2" id="gridCheck2">
+                            <label class="form-check-label" for="gridCheck2">
+                                checkbox 2
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-sm-10 offset-sm-2">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1"
+                                value="option1" checked>
+                            <label class="form-check-label" for="gridRadios1">
+                                radio 1
+                            </label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2"
+                                value="option2">
+                            <label class="form-check-label" for="gridRadios2">
+                                radio 2
+                            </label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios3"
+                                value="option3">
+                            <label class="form-check-label" for="gridRadios3">
+                                radio 3
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="row mb-3">
+                <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-10">
+                    <input type="email" class="form-control" id="inputEmail" name="email">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" id="inputPassword" name="password">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="navbar navbar-dark navbar-expand-md bg-dark">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-item nav-link" href="http://www.t.me">
+                        <i class="fa-brands fa fa-telegram"></i>
+                    </a>
+                    <a class="nav-item nav-link" href="http://www.instagram.com">
+                        <i class="fa-brands fa fa-instagram"></i>
+                    </a>
+                    <a class="nav-item nav-link" href="http://www.facebook.com">
+                        <i class="fa-brands fa fa-facebook"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+</body>
+
+</html>
