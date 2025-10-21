@@ -327,7 +327,6 @@
 /Users/Senych/Kolbasin_lab1/obj/Debug/net9.0/Kolbasin_lab1.pdb
 /Users/Senych/Kolbasin_lab1/obj/Debug/net9.0/Kolbasin_lab1.genruntimeconfig.cache
 /Users/Senych/Kolbasin_lab1/obj/Debug/net9.0/ref/Kolbasin_lab1.dll
-/Users/Senych/Kolbasin_lab1/obj/Debug/net9.0/compressed/wtap6hfs6z-av3kjbygck.gz
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/refs/Microsoft.AspNetCore.Antiforgery.dll
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/refs/Microsoft.AspNetCore.Authentication.Abstractions.dll
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/refs/Microsoft.AspNetCore.Authentication.BearerToken.dll
@@ -634,3 +633,5 @@
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation.dll
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/Microsoft.AspNetCore.Razor.Language.dll
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/Microsoft.CodeAnalysis.Razor.dll
+/Users/Senych/Kolbasin_lab1/obj/Debug/net9.0/Kolbasin_lab1.sourcelink.json
+/Users/Senych/Kolbasin_lab1/obj/Debug/net9.0/compressed/wtap6hfs6z-tmc4odr3oy.gz
