@@ -1,25 +1,43 @@
-@await Component.InvokeAsync("Cart");
-<div class="dropdown ms-4 nav-color">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-        aria-expanded="false">
-        user@gmail.com
-        <img src="~/img/profile.png" width="30" alt="user" class="rounded" />
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+@using System.Security.Claims;
+@if (SignInManager.IsSignedIn(User))
+{
+    @await Component.InvokeAsync("Cart")
+<div class="btn-group ms-4 nav-color">
+    <button class="btn btn-secondary btn-sm dropdown-toggle" 
+            type="button" id="dropdownMenuButton"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            @User.Identity?.Name
+        <img src="img/profile.png" width="20" alt="User" class="rounded nav-color" />
     </button>
-    <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton">
+    <ul class="dropdown-menu text-center" aria-labelledby="dropdownMenuButton">
         <li>
-            <span class="dropdown-item-text text-center">
-                <img src="~/img/profile.png" width="50" alt="user" class="rounded" />
-                user@gmail.com
+            <span class="dropdown-item-text d-flex flex-column align-items-center">
+                <img src="img/profile.png" width="50" alt="User" class="rounded mb-2" />
+                @User.Identity.Name
             </span>
         </li>
         <li>
-            <hr class="dropdown-divider" />
+            <hr class="dropdown-divider">
         </li>
         <li>
-            <form class="logoutForm" asp-area="identity" asp-page="/account/logout" class="w-100" method="post">
-                <button id="logout" type="submit"
-                    class="nav-link btn btn-link text-dark w-100 text-center">Выйти</button>
+            <form id="logoutForm" class="d-flex justify-content-center" asp-area="Identity" asp-route-returnurl="/"
+                asp-page="/Account/Logout">
+                <button id="logout" type="submit" class="btn btn-link text-dark">Logout</button>
             </form>
         </li>
     </ul>
 </div>
+}
+else{
+<div class="navbar-nav ms-auto">
+    <a asp-area="Identity" asp-page="/Account/Login" class="nav-item nav-link">Login</a>
+    <a asp-area="Identity" asp-page="/Account/Register" class="nav-item nav-link">Sign Up</a>
+</div>
+}
+
+
+
+
