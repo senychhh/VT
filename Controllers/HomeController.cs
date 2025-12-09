@@ -9,7 +9,7 @@ namespace Kolbasin_lab1.Controllers
     {
         public IActionResult Index()
         {
-            ViewData["text"] = "Лабораторная работа №2";
+            ViewData["text"] = "Лабораторные работы по курсу ASP.NET Core MVC";
 
             var items = new List<ListDemo>
             {

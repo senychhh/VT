@@ -3,7 +3,6 @@
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/libman.json
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/Kolbasin_lab1.staticwebassets.runtime.json
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/Kolbasin_lab1.staticwebassets.endpoints.json
-/Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/app.db
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/Kolbasin_lab1
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/Kolbasin_lab1.deps.json
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/Kolbasin_lab1.runtimeconfig.json
@@ -739,3 +738,5 @@
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/tr/Microsoft.CodeAnalysis.Scripting.resources.dll
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/zh-Hans/Microsoft.CodeAnalysis.Scripting.resources.dll
 /Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/zh-Hant/Microsoft.CodeAnalysis.Scripting.resources.dll
+/Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/Domain/obj/Domain.csproj.nuget.dgspec.json
+/Users/Senych/Kolbasin_lab1/bin/Debug/net9.0/Domain/obj/project.assets.json
