@@ -104,7 +104,7 @@ namespace Kolbasin_lab1.Services
                     Weight=200, Image="img/dishes/ПинаКолада.jpg",
                     CategoryId=_categories.Find(c=>c.NormalizedName.Equals("drinks")).Id},
             new Dish {Id =15 , Name = "Мохито",
-                    Description="Безалкогольныйосвежающий коктейль с мятой и лаймом",
+                    Description="Безалкогольный освежающий коктейль с мятой и лаймом",
                     Price=13,
                     Weight=200, Image="img/dishes/Мохито.webp",
                     CategoryId=_categories.Find(c=>c.NormalizedName.Equals("drinks")).Id},
