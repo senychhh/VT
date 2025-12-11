@@ -12,13 +12,15 @@ namespace Kolbasin_lab1.Services
         {
                 List<Dish> _dishes;
                 List<Category> _categories;
-                public MemoryProductService(ICategoryService categoryService)
+                private readonly IConfiguration _config;
+
+                public MemoryProductService(IConfiguration config, ICategoryService categoryService)
                 {
-                        _categories = categoryService.GetCategoryListAsync()
-                        .Result
-                        .Data;
+                        _config = config ?? throw new ArgumentNullException(nameof(config));
+                        _categories = categoryService.GetCategoryListAsync().Result?.Data ?? new List<Category>();
                         SetupData();
                 }
+
                 /// Инициализация списков
                 /// </summary>
                 private void SetupData()
@@ -144,49 +146,33 @@ namespace Kolbasin_lab1.Services
                 }
                 public Task<ResponseData<ProductListModel<Dish>>> GetProductListAsync(string? categoryNormalizedName, int pageNo = 1)
                 {
-                      // Создать объект результата
                         var result = new ResponseData<ProductListModel<Dish>>();
-                        // Id категории для фильрации
+
                         int? categoryId = null;
-                        // если требуется фильтрация, то найти Id категории
-                        // с заданным categoryNormalizedName
-                        if (categoryNormalizedName != null)
-                                categoryId = _categories
-                                .Find(c =>
-                                c.NormalizedName.Equals(categoryNormalizedName))
-                                ?.Id;
-                        // Выбрать объекты, отфильтрованные по Id категории,
-                        // если этот Id имеется
-                        var data = _dishes
-                        .Where(d => categoryId == null ||
-                        d.CategoryId.Equals(categoryId))?
-                        .ToList();
-                        // поместить ранные в объект результата
-                        result.Data = new ProductListModel<Dish>() { Items = data };
-                        // Если список пустой
-                        if (data.Count == 0)
+                        if (!string.IsNullOrEmpty(categoryNormalizedName))
+                                categoryId = _categories.FirstOrDefault(c => c.NormalizedName == categoryNormalizedName)?.Id;
+
+                        var filtered = _dishes.Where(d => categoryId == null || d.CategoryId == categoryId).ToList();
+
+                        // Получаем размер страницы из конфигурации
+                        int pageSize = _config.GetValue<int>("ItemsPerPage"); 
+                        int totalPages = (int)Math.Ceiling(filtered.Count / (double)pageSize);
+
+                        // Выбираем только нужную страницу
+                        var pagedDishes = filtered.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+
+                        result.Data = new ProductListModel<Dish>
                         {
-                                result.Success = false;
-                                result.ErrorMessage = "Нет объектов в выбраннной категории";
-                        }
-                        // Вернуть результат
+                                Items = pagedDishes,
+                                CurrentPage = pageNo,
+                                TotalPages = totalPages
+                        };
+
+                        result.Success = filtered.Count > 0;
+                        result.ErrorMessage = filtered.Count == 0 ? "Нет объектов в выбранной категории" : null;
+
                         return Task.FromResult(result);
                 }
-                // public Task<ResponseData<List<Dish>>> GetProductListAsync(string? search, int categoryId)
-                // {
-                //     var query = _dishes.AsQueryable();
-
-                //     if (!string.IsNullOrWhiteSpace(search))
-                //         query = query.Where(d => d.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
-
-                //     if (categoryId > 0)
-                //         query = query.Where(d => d.CategoryId == categoryId);
-
-                //     return Task.FromResult(new ResponseData<List<Dish>>
-                //     {
-                //         Data = query.ToList()
-                //     });
-                // }
 
                 public Task<ResponseData<Dish>> GetProductByIdAsync(int id)
                 {

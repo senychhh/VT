@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Kolbasin_lab1.Services;
 using Domain.Entities;
-
+using Domain.Models;
 
 namespace Kolbasin_lab1.Controllers
 {
@@ -17,22 +17,20 @@ namespace Kolbasin_lab1.Controllers
         }
 
         // GET: /Product
-     public async Task<IActionResult> Index(string? category)
-{
-    // Получаем список блюд
-    var dishesResponse = await _productService.GetProductListAsync(category);
-    
-    // Получаем список категорий
-    var categoriesResponse = await _categoryService.GetCategoryListAsync();
+        public async Task<IActionResult> Index(string? category, int page = 1)
+        {
+            // Получаем список блюд с пагинацией
+            var dishesResponse = await _productService.GetProductListAsync(category, page);
 
-    // Передаем данные через ViewBag
-    ViewBag.Categories = categoriesResponse?.Data ?? new List<Category>();
-    ViewBag.SelectedCategory = category;
+            // Получаем список категорий
+            var categoriesResponse = await _categoryService.GetCategoryListAsync();
 
-    // Передаем список блюд как модель
-    var dishes = dishesResponse?.Data?.Items ?? new List<Dish>();
-    return View(dishes);
-}
+            // Передаем данные через ViewBag
+            ViewBag.Categories = categoriesResponse?.Data ?? new List<Category>();
+            ViewBag.SelectedCategory = category;
 
+            // Передаем ProductListModel<Dish> как модель
+            return View(dishesResponse.Data);
+        }
     }
 }
