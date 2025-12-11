@@ -8,7 +8,15 @@
     var selectedCategory = ViewBag.SelectedCategory as string;
     var request = ViewContext.HttpContext.Request;
     var returnUrl = request.Path + request.QueryString.ToUriComponent();
+    string? category = request.Query["category"].ToString();
+    @* int prev = Model.CurrentPage == 1
+    ? 1
+    : Model.CurrentPage - 1;
+    int next = Model.CurrentPage == Model.TotalPages
+    ? Model.TotalPages
+    : Model.CurrentPage + 1; *@
 }
+
 
 <div class="container mt-5">
     <div class="row">
@@ -16,14 +24,14 @@
         <div class="col-md-3">
             <h5>Категории</h5>
             <div class="list-group">
-                <a href="@Url.Action("Index", "Product")" 
-                   class="list-group-item list-group-item-action @(selectedCategory == null ? "active" : "")">
+                <a href="@Url.Action("Index", "Product")"
+                    class="list-group-item list-group-item-action @(selectedCategory == null ? "active" : "")">
                     Все блюда
                 </a>
                 @foreach (var cat in categories)
                 {
                     <a href="@Url.Action("Index", "Product", new { category = cat.NormalizedName })"
-                       class="list-group-item list-group-item-action @(selectedCategory == cat.NormalizedName ? "active" : "")">
+                        class="list-group-item list-group-item-action @(selectedCategory == cat.NormalizedName ? "active" : "")">
                         @cat.Name
                     </a>
                 }
@@ -32,25 +40,25 @@
 
         <!-- Список блюд -->
         <div class="col-md-9">
-            <h3>@(selectedCategory != null 
-                    ? $"Категория: {categories.FirstOrDefault(c => c.NormalizedName == selectedCategory)?.Name}" 
-                    : "Все блюда")</h3>
+            <h3>@(selectedCategory != null
+                                ? $"Категория: {categories.FirstOrDefault(c => c.NormalizedName == selectedCategory)?.Name}"
+                                : "Все блюда")</h3>
 
             <div class="row">
                 @foreach (var dish in Model.Items)
                 {
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="card h-100 d-flex flex-column">
-                            
+
                             @if (!string.IsNullOrEmpty(dish.Image))
                             {
-                                <img src="@dish.Image" class="card-img-top" alt="@dish.Name" 
-                                     style="height: 200px; object-fit: cover;">
+                                <img src="@dish.Image" class="card-img-top" alt="@dish.Name"
+                                    style="height: 200px; object-fit: cover;">
                             }
                             else
                             {
                                 <div style="height: 200px; background-color: #e9ecef; display: flex; 
-                                            align-items: center; justify-content: center;">
+                                                    align-items: center; justify-content: center;">
                                     <span class="text-muted">Нет изображения</span>
                                 </div>
                             }
@@ -63,14 +71,14 @@
                                     <span>
                                         @if (dish.Weight.HasValue)
                                         {
-                                           <span>Вес: @dish.Weight г.</span>
+                                            <span>Вес: @dish.Weight г.</span>
                                         }
                                     </span>
                                     <strong>@dish.Price.ToString("C")</strong>
                                 </div>
 
-                                <a href="@Url.Action("Add", "Cart", new { id = dish.Id, returnUrl = returnUrl })" 
-                                   class="btn btn-primary w-100">
+                                <a href="@Url.Action("Add", "Cart", new { id = dish.Id, returnUrl = returnUrl })"
+                                    class="btn btn-primary w-100">
                                     В корзину
                                 </a>
                             </div>
@@ -78,13 +86,18 @@
                     </div>
                 }
             </div>
+        
+            @* <pager current-page="@Model.CurrentPage" 
+                total-pages="@Model.TotalPages" 
+                action="Index" controller="Product"
+                category="@ViewBag.SelectedCategory"></pager>
 
             @if (!Model.Items.Any())
             {
                 <div class="alert alert-info">
                     Блюда в этой категории не найдены.
                 </div>
-            }
+            } *@
 
             <!-- Bootstrap пагинация -->
             <nav aria-label="Page navigation">
@@ -95,18 +108,21 @@
                     }
 
                     <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
-                        <a class="page-link" href="@Url.Action("Index", "Product", new { category = selectedCategory, page = prev })">Previous</a>
+                        <a class="page-link"
+                            href="@Url.Action("Index", "Product", new { category = selectedCategory, page = prev })">Previous</a>
                     </li>
 
                     @for (int i = 1; i <= Model.TotalPages; i++)
                     {
                         <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                            <a class="page-link" href="@Url.Action("Index", "Product", new { category = selectedCategory, page = i })">@i</a>
+                            <a class="page-link"
+                                href="@Url.Action("Index", "Product", new { category = selectedCategory, page = i })">@i</a>
                         </li>
                     }
 
                     <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
-                        <a class="page-link" href="@Url.Action("Index", "Product", new { category = selectedCategory, page = next })">Next</a>
+                        <a class="page-link"
+                            href="@Url.Action("Index", "Product", new { category = selectedCategory, page = next })">Next</a>
                     </li>
                 </ul>
             </nav>

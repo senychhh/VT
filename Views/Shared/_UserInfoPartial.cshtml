@@ -10,12 +10,13 @@
             type="button" id="dropdownMenuButton"
             data-bs-toggle="dropdown" aria-expanded="false">
             @User.Identity?.Name
-        <img src="/Image/GetAvatar" width="20" alt="User Avatar" class="rounded nav-color" />
+        @* <img src="/Image/GetAvatar" width="20" alt="User Avatar" class="rounded nav-color" /> *@
+        <img img-action="GetAvatar" img-controller="Image" width="20" alt="User Avatar" class="rounded nav-color" />
     </button>
     <ul class="dropdown-menu text-center" aria-labelledby="dropdownMenuButton">
         <li>
             <span class="dropdown-item-text d-flex flex-column align-items-center">
-                <img src="/Image/GetAvatar" width="50" alt="User" class="rounded mb-2" />
+                <img img-action="GetAvatar" img-controller="Image" width="50" alt="User" class="rounded mb-2" />
                 @User.Identity.Name
             </span>
         </li>

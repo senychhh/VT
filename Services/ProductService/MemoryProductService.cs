@@ -155,7 +155,7 @@ namespace Kolbasin_lab1.Services
                         var filtered = _dishes.Where(d => categoryId == null || d.CategoryId == categoryId).ToList();
 
                         // Получаем размер страницы из конфигурации
-                        int pageSize = _config.GetValue<int>("ItemsPerPage"); 
+                        int pageSize = _config.GetValue<int>("ItemsPerPage", 3); 
                         int totalPages = (int)Math.Ceiling(filtered.Count / (double)pageSize);
 
                         // Выбираем только нужную страницу
