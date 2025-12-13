@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Kolbasin_lab1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+11ebd556596657e59707a7343dfb1f49084921ed")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1c531251cf604787eab6ea1e1b86a97ca5e6615f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Kolbasin_lab1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Kolbasin_lab1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -9,10 +9,9 @@ using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
 
 namespace Kolbasin_lab1.Controllers
 {
+    [Route("Catalog")]
     public class ProductController : Controller
     {
-        
-
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
       
@@ -22,7 +21,8 @@ namespace Kolbasin_lab1.Controllers
             _productService = productService;
             _categoryService = categoryService;
         }
-
+[Route("")]
+    [Route("{category}")]
         // GET: /Product
         public async Task<IActionResult> Index(string? category, int page = 1)
         {

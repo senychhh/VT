@@ -18,14 +18,14 @@
             <h5>Категории</h5>
             <div class="list-group">
 
-                <a href="@Url.Action("Index", "Product")"
+                <a href="/Catalog"
                    class="list-group-item list-group-item-action @(selectedCategory == null ? "active" : "")">
                     Все блюда
                 </a>
 
                 @foreach (var cat in categories)
                 {
-                    <a href="@Url.Action("Index", "Product", new { category = cat.NormalizedName })"
+                    <a href="/Catalog/@cat.NormalizedName", new { category = cat.NormalizedName })"
                        class="list-group-item list-group-item-action @(selectedCategory == cat.NormalizedName ? "active" : "")">
                         @cat.Name
                     </a>
@@ -62,8 +62,8 @@
 
                     <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
                         <a class="page-link"
-                           href="@Url.Action("Index", "Product", new { category = selectedCategory, page = prev })">
-                            Previous
+                           href="/Catalog/@selectedCategory?page=@prev">
+                            &laquo;
                         </a>
                     </li>
 
@@ -71,7 +71,7 @@
                     {
                         <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
                             <a class="page-link"
-                               href="@Url.Action("Index", "Product", new { category = selectedCategory, page = i })">
+                               href="/Catalog/@selectedCategory?page=@i">
                                 @i
                             </a>
                         </li>
@@ -79,8 +79,8 @@
 
                     <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
                         <a class="page-link"
-                           href="@Url.Action("Index", "Product", new { category = selectedCategory, page = next })">
-                            Next
+                           href="/Catalog/@selectedCategory?page=@next">
+                            &raquo;
                         </a>
                     </li>
 
