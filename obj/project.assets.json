@@ -2714,6 +2714,16 @@
         "build": {
           "buildTransitive/net6.0/_._": {}
         }
+      },
+      "Kolbasin.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/Kolbasin.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Kolbasin.Domain.dll": {}
+        }
       }
     }
   },
@@ -7070,10 +7080,16 @@
         "system.threading.tasks.dataflow.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "Kolbasin.Domain/1.0.0": {
+      "type": "project",
+      "path": "Kolbasin.Domain/Kolbasin.Domain.csproj",
+      "msbuildProject": "Kolbasin.Domain/Kolbasin.Domain.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
+      "Kolbasin.Domain >= 1.0.0",
       "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore >= 9.0.7",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 9.0.10",
       "Microsoft.AspNetCore.Identity.UI >= 9.0.7",
@@ -7089,11 +7105,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/Senych/Kolbasin_lab1/Kolbasin_lab1.csproj",
+      "projectUniqueName": "/Users/Senych/Kolbasin_solution/Kolbasin_lab1.csproj",
       "projectName": "Kolbasin_lab1",
-      "projectPath": "/Users/Senych/Kolbasin_lab1/Kolbasin_lab1.csproj",
+      "projectPath": "/Users/Senych/Kolbasin_solution/Kolbasin_lab1.csproj",
       "packagesPath": "/Users/Senych/.nuget/packages/",
-      "outputPath": "/Users/Senych/Kolbasin_lab1/obj/",
+      "outputPath": "/Users/Senych/Kolbasin_solution/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/Senych/.nuget/NuGet/NuGet.Config"
@@ -7107,7 +7123,11 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "/Users/Senych/Kolbasin_solution/Kolbasin.Domain/Kolbasin.Domain.csproj": {
+              "projectPath": "/Users/Senych/Kolbasin_solution/Kolbasin.Domain/Kolbasin.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

@@ -1,0 +1,12 @@
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/bin/Debug/net9.0/Kolbasin.Domain.deps.json
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/bin/Debug/net9.0/Kolbasin.Domain.dll
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/bin/Debug/net9.0/Kolbasin.Domain.pdb
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/obj/Debug/net9.0/Kolbasin.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/obj/Debug/net9.0/Kolbasin.Domain.AssemblyInfoInputs.cache
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/obj/Debug/net9.0/Kolbasin.Domain.AssemblyInfo.cs
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/obj/Debug/net9.0/Kolbasin.Domain.csproj.CoreCompileInputs.cache
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/obj/Debug/net9.0/Kolbasin.Domain.sourcelink.json
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/obj/Debug/net9.0/Kolbasin.Domain.dll
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/obj/Debug/net9.0/refint/Kolbasin.Domain.dll
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/obj/Debug/net9.0/Kolbasin.Domain.pdb
+/Users/Senych/Kolbasin_solution/Kolbasin.Domain/obj/Debug/net9.0/ref/Kolbasin.Domain.dll

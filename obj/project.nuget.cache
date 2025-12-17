@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5fus7cO3HSM=",
+  "dgSpecHash": "uGpQ47HQC70=",
   "success": true,
-  "projectFilePath": "/Users/Senych/Kolbasin_lab1/Kolbasin_lab1.csproj",
+  "projectFilePath": "/Users/Senych/Kolbasin_solution/Kolbasin_lab1.csproj",
   "expectedPackageFiles": [
     "/Users/Senych/.nuget/packages/humanizer/2.14.1/humanizer.2.14.1.nupkg.sha512",
     "/Users/Senych/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
