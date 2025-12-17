@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Kolbasin.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ea373e57f57ca811870663ace79a27db4567b6b6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3dbda69a5725361f550df117a92d4665e9f9a931")]
 [assembly: System.Reflection.AssemblyProductAttribute("Kolbasin.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Kolbasin.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
