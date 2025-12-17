@@ -9,7 +9,7 @@ namespace Domain.Entities
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public string? Description { get; set; }
 
@@ -25,6 +25,6 @@ namespace Domain.Entities
         public int CategoryId { get; set; }
 
         /// Навигационное свойство - категория блюда
-        public Category? Category { get; set; }
+        public Category ?Category { get; set; }
     }
 }

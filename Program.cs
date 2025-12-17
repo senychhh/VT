@@ -9,8 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 var cultureInfo = new CultureInfo("be-BY");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-builder.Services.AddScoped<IProductService, MemoryProductService>();
-builder.Services.AddScoped<ICategoryService, MemoryCategoryService>();
+builder.Services.AddHttpClient<IProductService, ApiProductService>(opt =>
+    opt.BaseAddress = new Uri("http://localhost:9999/api/dishes/"));
+
+builder.Services.AddHttpClient<ICategoryService, ApiCategoryService>(opt =>
+    opt.BaseAddress = new Uri("http://localhost:9999/api/categories/"));
 
 
 // Add services to the container.

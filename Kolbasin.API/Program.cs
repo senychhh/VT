@@ -1,41 +1,47 @@
+using Kolbasin.API.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                       ?? "Data Source=menu.db";
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(connectionString));
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Swagger / OpenAPI
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
 
 var app = builder.Build();
+Console.WriteLine("DB PATH = " + Path.GetFullPath("menu.db"));
 
-// Configure the HTTP request pipeline.
+
+// Заполняем базу начальными данными
+await DbInitializer.SeedDataAsync(app);
+
+// Настройка HTTP pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
+app.UseAuthorization();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
 
-app.MapGet("/weatherforecast", () =>
+app.MapControllers();
+
+// Пример тестового эндпоинта
+app.MapGet("/categories", async (AppDbContext context) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    return await context.Categories.ToListAsync();
+});
+
+app.MapGet("/dishes", async (AppDbContext context) =>
+{
+    return await context.Dishes.ToListAsync();
+});
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
