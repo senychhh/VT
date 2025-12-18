@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Kolbasin_lab1.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Kolbasin_lab1.Areas.Admin.Pages.Dishes
 {
+     [Authorize(Policy = "admin")]
     public class DeleteModel : PageModel
     {
         private readonly Kolbasin_lab1.Data.AppDbContext _context;

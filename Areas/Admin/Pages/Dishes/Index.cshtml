@@ -14,28 +14,28 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Dish[0].Name)
+                @Html.DisplayNameFor(model => model.Dishes[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dish[0].Description)
+                @Html.DisplayNameFor(model => model.Dishes[0].Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dish[0].Price)
+                @Html.DisplayNameFor(model => model.Dishes[0].Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dish[0].Weight)
+                @Html.DisplayNameFor(model => model.Dishes[0].Weight)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dish[0].Image)
+                @Html.DisplayNameFor(model => model.Dishes[0].Image)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dish[0].Category)
+                @Html.DisplayNameFor(model => model.Dishes[0].Category)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Dish) {
+@foreach (var item in Model.Dishes) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)

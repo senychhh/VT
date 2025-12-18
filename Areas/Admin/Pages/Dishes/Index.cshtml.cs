@@ -7,24 +7,43 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Kolbasin_lab1.Data;
+using Kolbasin_lab1.Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Kolbasin_lab1.Areas.Admin.Pages.Dishes
 {
+    [Authorize(Policy = "admin")]
+    
     public class IndexModel : PageModel
     {
-        private readonly Kolbasin_lab1.Data.AppDbContext _context;
+        private readonly IProductService _productService;
 
-        public IndexModel(Kolbasin_lab1.Data.AppDbContext context)
+        public IndexModel(IProductService productService)
         {
-            _context = context;
+            _productService = productService;
         }
 
-        public IList<Dish> Dish { get;set; } = default!;
+        public IList<Dish> Dishes { get; set; } = new List<Dish>();
 
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
         public async Task OnGetAsync()
+{
+    var isAdmin = User.HasClaim(ClaimTypes.Role, "admin");
+    Console.WriteLine($"Is Admin: {isAdmin}");
+}
+
+        public async Task OnGetAsync(int pageNo = 1)
         {
-            Dish = await _context.Dishes
-                .Include(d => d.Category).ToListAsync();
+            var response = await _productService.GetProductListAsync(null, pageNo);
+
+            if (response.Success)
+            {
+                Dishes = response.Data.Items;
+                CurrentPage = response.Data.CurrentPage;
+                TotalPages = response.Data.TotalPages;
+            }
         }
     }
 }

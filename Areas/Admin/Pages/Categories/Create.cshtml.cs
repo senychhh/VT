@@ -7,10 +7,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Domain.Entities;
 using Kolbasin_lab1.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Kolbasin_lab1.Areas.Admin.Pages.Categories
 {
-    public class CreateModel : PageModel
+
+[Authorize(Policy = "admin")]  
+  public class CreateModel : PageModel
     {
         private readonly Kolbasin_lab1.Data.AppDbContext _context;
 
