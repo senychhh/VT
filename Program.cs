@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 var cultureInfo = new CultureInfo("be-BY");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
 builder.Services.AddHttpClient<IProductService, ApiProductService>(opt =>
     opt.BaseAddress = new Uri("http://localhost:9999/api/dishes/"));
 
@@ -20,6 +21,10 @@ builder.Services.AddHttpClient<ICategoryService, ApiCategoryService>(opt =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(""));
+
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 

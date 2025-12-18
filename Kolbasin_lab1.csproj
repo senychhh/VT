@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Kolbasin_lab1-083af98d-59b1-4a70-9f6d-5443c40f6ec7</UserSecretsId>
+        <UseAppHost>false</UseAppHost>
   </PropertyGroup>
 
   <ItemGroup>
