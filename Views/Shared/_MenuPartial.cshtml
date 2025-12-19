@@ -14,5 +14,5 @@
 <div class="navbar-nav">
     <a class="nav-item nav-link @(controller=="home" ? "active":"")" asp-controller="home" asp-action="index">ЛБ 1</a>
     <a class="nav-item nav-link @(controller=="product" ? "active":"")" asp-controller="product" asp-action="index">Каталог</a>
-    <a class="nav-item nav-link @(area=="admin" ? "active":"")" asp-area="admin" asp-controller="home" asp-action="index">Администрирование</a>
+    <a class="nav-item nav-link @(area=="admin" ? "active":"")" asp-area="Admin" asp-page="/Dishes/Index">Администрирование</a>
 </div>

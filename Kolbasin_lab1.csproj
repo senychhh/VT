@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="Kolbasin.Domain\Kolbasin.Domain.csproj" />
-    <ProjectReference Include="Kolbasin.API\Kolbasin.API.csproj" />
+    <!-- <ProjectReference Include="Kolbasin.API\Kolbasin.API.csproj" /> -->
   </ItemGroup>
 
   <ItemGroup>

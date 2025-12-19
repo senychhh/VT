@@ -67,3 +67,60 @@ namespace Kolbasin_lab1.Data
         }
     }
 }
+
+// using Microsoft.AspNetCore.Identity;
+// using System.Security.Claims;
+
+// namespace Kolbasin_lab1.Data
+// {
+//     public class DbInit
+//     {
+//         public static async Task SeedData(WebApplication app)
+//         {
+//             using var scope = app.Services.CreateScope();
+//             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+//             string adminEmail = "admin@gmail.com";
+//             string adminPassword = "123456";
+
+//             // 1️⃣ Проверяем, существует ли пользователь с таким email
+//             var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
+//             if (existingAdmin != null)
+//             {
+//                 // Удаляем старого администратора
+//                 var deleteResult = await userManager.DeleteAsync(existingAdmin);
+//                 if (!deleteResult.Succeeded)
+//                 {
+//                     foreach (var error in deleteResult.Errors)
+//                         Console.WriteLine($"Ошибка при удалении старого админа: {error.Description}");
+//                 }
+//                 else
+//                 {
+//                     Console.WriteLine("Старый админ успешно удален");
+//                 }
+//             }
+
+//             // 2️⃣ Создаём нового администратора
+//             var admin = new ApplicationUser
+//             {
+//                 Email = adminEmail,
+//                 UserName = adminEmail,
+//                 EmailConfirmed = true
+//             };
+
+//             var createResult = await userManager.CreateAsync(admin, adminPassword);
+//             if (!createResult.Succeeded)
+//             {
+//                 foreach (var error in createResult.Errors)
+//                     Console.WriteLine($"Ошибка при создании нового админа: {error.Description}");
+//                 return;
+//             }
+
+//             // 3️⃣ Добавляем claim Role=admin
+//             var claim = new Claim(ClaimTypes.Role, "admin");
+//             await userManager.AddClaimAsync(admin, claim);
+
+//             Console.WriteLine("Новый админ создан и claim Role=admin добавлен");
+//         }
+//     }
+// }

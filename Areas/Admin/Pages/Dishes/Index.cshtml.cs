@@ -28,12 +28,6 @@ namespace Kolbasin_lab1.Areas.Admin.Pages.Dishes
 
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
-        public async Task OnGetAsync()
-{
-    var isAdmin = User.HasClaim(ClaimTypes.Role, "admin");
-    Console.WriteLine($"Is Admin: {isAdmin}");
-}
-
         public async Task OnGetAsync(int pageNo = 1)
         {
             var response = await _productService.GetProductListAsync(null, pageNo);
