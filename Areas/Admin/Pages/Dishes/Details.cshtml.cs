@@ -4,21 +4,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Kolbasin_lab1.Data;
 using Microsoft.AspNetCore.Authorization;
+using Kolbasin_lab1.Services;
 
 namespace Kolbasin_lab1.Areas.Admin.Pages.Dishes
 {
-     [Authorize(Policy = "admin")]
+    [Authorize(Policy = "admin")]
     public class DetailsModel : PageModel
     {
-        private readonly Kolbasin_lab1.Data.AppDbContext _context;
+        private readonly IProductService _productService;
 
-        public DetailsModel(Kolbasin_lab1.Data.AppDbContext context)
+        public DetailsModel(IProductService productService)
         {
-            _context = context;
+            _productService = productService;
         }
 
         public Dish Dish { get; set; } = default!;
@@ -30,16 +30,15 @@ namespace Kolbasin_lab1.Areas.Admin.Pages.Dishes
                 return NotFound();
             }
 
-            var dish = await _context.Dishes.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (dish is not null)
+            var response = await _productService.GetProductByIdAsync(id.Value);
+            
+            if (!response.Success || response.Data == null)
             {
-                Dish = dish;
-
-                return Page();
+                return NotFound();
             }
 
-            return NotFound();
+            Dish = response.Data;
+            return Page();
         }
     }
 }

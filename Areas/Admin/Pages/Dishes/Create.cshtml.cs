@@ -8,38 +8,55 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Domain.Entities;
 using Kolbasin_lab1.Data;
 using Microsoft.AspNetCore.Authorization;
+using Kolbasin_lab1.Services;
 
 namespace Kolbasin_lab1.Areas.Admin.Pages.Dishes
 {
-     [Authorize(Policy = "admin")]
+    [Authorize(Policy = "admin")]
     public class CreateModel : PageModel
     {
-        private readonly Kolbasin_lab1.Data.AppDbContext _context;
+        private readonly ICategoryService _categoryService;
+        private readonly IProductService _productService;
+        
 
-        public CreateModel(Kolbasin_lab1.Data.AppDbContext context)
+        public CreateModel(ICategoryService categoryService, IProductService productService)
         {
-            _context = context;
-        }
-
-        public IActionResult OnGet()
-        {
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-            return Page();
+            _categoryService = categoryService;
+            _productService = productService;
         }
 
         [BindProperty]
-        public Dish Dish { get; set; } = default!;
+        public Dish Dish { get; set; } = new();
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
+        [BindProperty]
+        public IFormFile? Image { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
+        {
+            var categoryListData = await _categoryService.GetCategoryListAsync();
+            ViewData["CategoryId"] = new SelectList(categoryListData.Data, "Id", "Name");
+            return Page();
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
+                // Перезагружаем список категорий при ошибке валидации
+                var categoryListData = await _categoryService.GetCategoryListAsync();
+                ViewData["CategoryId"] = new SelectList(categoryListData.Data, "Id", "Name");
                 return Page();
             }
 
-            _context.Dishes.Add(Dish);
-            await _context.SaveChangesAsync();
+            var response = await _productService.CreateProductAsync(Dish, Image);
+            if (!response.Success)
+            {
+                ModelState.AddModelError("", response.ErrorMessage ?? "Ошибка при создании блюда");
+                // Перезагружаем список категорий при ошибке
+                var categoryListData = await _categoryService.GetCategoryListAsync();
+                ViewData["CategoryId"] = new SelectList(categoryListData.Data, "Id", "Name");
+                return Page();
+            }
 
             return RedirectToPage("./Index");
         }

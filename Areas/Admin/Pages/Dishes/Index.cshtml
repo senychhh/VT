@@ -2,13 +2,14 @@
 @model Kolbasin_lab1.Areas.Admin.Pages.Dishes.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Admin Dishes";
+
 }
 
-<h1>Index</h1>
-
+<h1 class="mb-3">Dishes admin</h1>
 <p>
-    <a asp-page="Create">Create New</a>
+   <a asp-page="Create" class="btn btn-primary">
+        </i>Create new</a>
 </p>
 <table class="table">
     <thead>
@@ -35,32 +36,50 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Dishes) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Weight)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Dishes)
+        {
+            <tr>
+                <td>@item.Name
+                </td>
+                <td>
+                    @item.Description
+                </td>
+                <td>
+                    @item.Price
+                </td>
+                <td>
+                    @item.Weight
+                </td>
+                <td>
+                   @if (!string.IsNullOrEmpty(item.Image))
+                   {
+                       <img src="/@item.Image"
+                            alt="@item.Name"
+                            class="dish-image-admin" />
+                   }
+                   else
+                   {
+                       <div class="dish-image-admin bg-light d-flex align-items-center justify-content-center">
+                           <span class="text-muted small">Нет изображения</span>
+                       </div>
+                   }
+                </td>
+                <td>
+                    @item.Category?.Name
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-success me-1">
+                        <i class="fa-solid fa-pen-to-square"></i></a> 
+                    <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-primary me-1">
+                        <i class="fa-solid fa-info"></i></a> 
+                    <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger"><i
+                            class="fa-regular fa-trash-can"></i></a>
+                </td>
+            </tr>
+        }
+
     </tbody>
 </table>
+<pager admin="true" current-page="@Model.CurrentPage" 
+total-pages="@Model.TotalPages">
+</pager>

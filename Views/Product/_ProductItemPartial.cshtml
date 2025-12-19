@@ -6,14 +6,12 @@
     @if (!string.IsNullOrEmpty(Model.Image))
     {
         <img src="~/@Model.Image"
-             class="card-img-top"
-             alt="@Model.Name"
-             style="height: 200px; object-fit: cover;">
+             class="card-img-top dish-image-catalog"
+             alt="@Model.Name" />
     }
     else
     {
-        <div style="height: 200px; background-color: #e9ecef; 
-                    display: flex; align-items: center; justify-content: center;">
+        <div class="dish-image-catalog bg-light d-flex align-items-center justify-content-center">
             <span class="text-muted">Нет изображения</span>
         </div>
     }

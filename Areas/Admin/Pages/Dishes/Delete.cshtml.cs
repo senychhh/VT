@@ -8,57 +8,61 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Kolbasin_lab1.Data;
 using Microsoft.AspNetCore.Authorization;
+using Kolbasin_lab1.Services;
 
 namespace Kolbasin_lab1.Areas.Admin.Pages.Dishes
 {
-     [Authorize(Policy = "admin")]
+    [Authorize(Policy = "admin")]
     public class DeleteModel : PageModel
     {
-        private readonly Kolbasin_lab1.Data.AppDbContext _context;
+        private readonly IProductService _productService;
 
-        public DeleteModel(Kolbasin_lab1.Data.AppDbContext context)
+        public DeleteModel(IProductService productService)
         {
-            _context = context;
+            _productService = productService;
         }
 
         [BindProperty]
-        public Dish Dish { get; set; } = default!;
+        public Dish Dish { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var dish = await _context.Dishes.FirstOrDefaultAsync(m => m.Id == id);
+            var response = await _productService.GetProductByIdAsync(id.Value);
+            if (!response.Success || response.Data == null) return NotFound();
 
-            if (dish is not null)
-            {
-                Dish = dish;
-
-                return Page();
-            }
-
-            return NotFound();
+            Dish = response.Data;
+            return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync()
+{
+    if (Dish.Id == 0) return NotFound();
+
+    try
+    {
+        var response = await _productService.DeleteProductAsync(Dish.Id);
+        if (!response.Success)
         {
-            if (id == null)
+            ModelState.AddModelError("", response.ErrorMessage ?? "Ошибка при удалении");
+            // Перезагружаем данные блюда для отображения
+            var dishResponse = await _productService.GetProductByIdAsync(Dish.Id);
+            if (dishResponse.Success && dishResponse.Data != null)
             {
-                return NotFound();
+                Dish = dishResponse.Data;
             }
-
-            var dish = await _context.Dishes.FindAsync(id);
-            if (dish != null)
-            {
-                Dish = dish;
-                _context.Dishes.Remove(Dish);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToPage("./Index");
+            return Page();
         }
+        return RedirectToPage("./Index");
+    }
+    catch (Exception ex)
+    {
+        // Логируем ошибку и возвращаем страницу с сообщением
+        Console.WriteLine(ex.Message);
+        ModelState.AddModelError("", "Ошибка при удалении: " + ex.Message);
+        return Page();
+    }
+}
     }
 }

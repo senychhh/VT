@@ -5,25 +5,30 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Kolbasin_lab1.Data;
 using Microsoft.AspNetCore.Authorization;
+using Kolbasin_lab1.Services;
 
 namespace Kolbasin_lab1.Areas.Admin.Pages.Dishes
 {
-     [Authorize(Policy = "admin")]
+    [Authorize(Policy = "admin")]
     public class EditModel : PageModel
     {
-        private readonly Kolbasin_lab1.Data.AppDbContext _context;
+        private readonly ICategoryService _categoryService;
+        private readonly IProductService _productService;
 
-        public EditModel(Kolbasin_lab1.Data.AppDbContext context)
+        public EditModel(ICategoryService categoryService, IProductService productService)
         {
-            _context = context;
+            _categoryService = categoryService;
+            _productService = productService;
         }
 
         [BindProperty]
         public Dish Dish { get; set; } = default!;
+
+        [BindProperty]
+        public IFormFile? Image { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -32,49 +37,41 @@ namespace Kolbasin_lab1.Areas.Admin.Pages.Dishes
                 return NotFound();
             }
 
-            var dish =  await _context.Dishes.FirstOrDefaultAsync(m => m.Id == id);
-            if (dish == null)
+            var response = await _productService.GetProductByIdAsync(id.Value);
+            if (!response.Success || response.Data == null)
             {
                 return NotFound();
             }
-            Dish = dish;
-           ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+
+            Dish = response.Data;
+            
+            var categoryListData = await _categoryService.GetCategoryListAsync();
+            ViewData["CategoryId"] = new SelectList(categoryListData.Data, "Id", "Name", Dish.CategoryId);
+            
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
+                // Перезагружаем список категорий при ошибке валидации
+                var categoryListData = await _categoryService.GetCategoryListAsync();
+                ViewData["CategoryId"] = new SelectList(categoryListData.Data, "Id", "Name", Dish.CategoryId);
                 return Page();
             }
 
-            _context.Attach(Dish).State = EntityState.Modified;
-
-            try
+            var response = await _productService.UpdateProductAsync(Dish.Id, Dish, Image);
+            if (!response.Success)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DishExists(Dish.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                ModelState.AddModelError("", response.ErrorMessage ?? "Ошибка при обновлении блюда");
+                // Перезагружаем список категорий при ошибке
+                var categoryListData = await _categoryService.GetCategoryListAsync();
+                ViewData["CategoryId"] = new SelectList(categoryListData.Data, "Id", "Name", Dish.CategoryId);
+                return Page();
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool DishExists(int id)
-        {
-            return _context.Dishes.Any(e => e.Id == id);
         }
     }
 }

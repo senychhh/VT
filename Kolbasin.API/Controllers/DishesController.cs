@@ -16,10 +16,12 @@ namespace Kolbasin.API.Controllers
     public class DishesController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public DishesController(AppDbContext context)
+        public DishesController(AppDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         /// GET: api/Dishes
@@ -113,6 +115,38 @@ namespace Kolbasin.API.Controllers
             return NoContent();
         }
 
+ [HttpPost("{id}")]
+        public async Task<IActionResult> SaveImage(int id, IFormFile image)
+        {
+            var dish = await _context.Dishes.FindAsync(id);
+            if (dish == null) return NotFound();
+
+            if (image == null || image.Length == 0)
+                return BadRequest("Файл не передан");
+
+            // если было старое изображение — удалим файл
+            TryDeleteImageFile(dish.Image);
+
+            var imagesPath = Path.Combine(_env.WebRootPath, "Images");
+            Directory.CreateDirectory(imagesPath);
+
+            var randomName = Path.GetRandomFileName();
+            var extension = Path.GetExtension(image.FileName);
+            var fileName = Path.ChangeExtension(randomName, extension);
+            var filePath = Path.Combine(imagesPath, fileName);
+
+            using (var stream = System.IO.File.OpenWrite(filePath))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            var url = $"{Request.Scheme}://{Request.Host}/Images/{fileName}";
+            dish.Image = url;
+
+            await _context.SaveChangesAsync();
+            return Ok(url);
+        }
+
         // POST: api/Dishes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -134,6 +168,9 @@ namespace Kolbasin.API.Controllers
                 return NotFound();
             }
 
+            // Удаляем файл изображения перед удалением блюда
+            TryDeleteImageFile(dish.Image);
+
             _context.Dishes.Remove(dish);
             await _context.SaveChangesAsync();
 
@@ -144,5 +181,30 @@ namespace Kolbasin.API.Controllers
         {
             return _context.Dishes.Any(e => e.Id == id);
         }
+           private void TryDeleteImageFile(string? imageUrl)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(imageUrl)) return;
+
+                // ожидаем, что URL содержит "/Images/filename.ext"
+                var idx = imageUrl.LastIndexOf("/Images/", StringComparison.OrdinalIgnoreCase);
+                if (idx < 0) return;
+
+                var fileName = imageUrl.Substring(idx + "/Images/".Length);
+                if (string.IsNullOrWhiteSpace(fileName)) return;
+
+                // защита от ".."
+                fileName = Path.GetFileName(fileName);
+
+                var path = Path.Combine(_env.WebRootPath, "Images", fileName);
+                if (System.IO.File.Exists(path))
+                    System.IO.File.Delete(path);
+            }
+            catch
+            {
+                // ignored
+            }
     }
+}
 }

@@ -48,48 +48,167 @@ public class ApiProductService(HttpClient httpClient)
 
         if (result.IsSuccessStatusCode)
         {
-            return await result.Content.ReadFromJsonAsync<ResponseData<Dish>>();
+            var dish = await result.Content.ReadFromJsonAsync<Dish>();
+            return new ResponseData<Dish>
+            {
+                Success = true,
+                Data = dish
+            };
         }
 
         return new ResponseData<Dish>
         {
             Success = false,
-            ErrorMessage = "Ошибка получения продукта"
+            ErrorMessage = result.StatusCode == System.Net.HttpStatusCode.NotFound 
+                ? "Блюдо не найдено" 
+                : "Ошибка получения продукта"
         };
     }
 
     public async Task<ResponseData<Dish>> CreateProductAsync(Dish dish, IFormFile? image)
     {
-        return new ResponseData<Dish>
+        try
         {
-            Success = false,
-            ErrorMessage = "Метод не реализован в API-сервисе"
-        };
+            // Сначала создаем блюдо
+            var createResponse = await httpClient.PostAsJsonAsync(httpClient.BaseAddress, dish);
+            
+            if (!createResponse.IsSuccessStatusCode)
+            {
+                return new ResponseData<Dish>
+                {
+                    Success = false,
+                    ErrorMessage = $"Ошибка создания блюда: {createResponse.StatusCode}"
+                };
+            }
+
+            var createdDish = await createResponse.Content.ReadFromJsonAsync<Dish>();
+            
+            // Если есть изображение, загружаем его
+            if (image != null && createdDish != null)
+            {
+                using var content = new MultipartFormDataContent();
+                using var stream = image.OpenReadStream();
+                var streamContent = new StreamContent(stream);
+                streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(image.ContentType);
+                content.Add(streamContent, "image", image.FileName);
+
+                var imageResponse = await httpClient.PostAsync($"{httpClient.BaseAddress}{createdDish.Id}", content);
+                
+                if (imageResponse.IsSuccessStatusCode)
+                {
+                    var imageUrl = await imageResponse.Content.ReadAsStringAsync();
+                    createdDish.Image = imageUrl.Trim('"'); // Убираем кавычки из JSON строки
+                }
+            }
+
+            return new ResponseData<Dish>
+            {
+                Success = true,
+                Data = createdDish
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ResponseData<Dish>
+            {
+                Success = false,
+                ErrorMessage = $"Ошибка при создании блюда: {ex.Message}"
+            };
+        }
     }
 
     public async Task<ResponseData<Dish>> UpdateProductAsync(int id, Dish dish, IFormFile? image)
     {
-        return new ResponseData<Dish>
+        try
         {
-            Success = false,
-            ErrorMessage = "Метод не реализован в API-сервисе"
-        };
+            var updateResponse = await httpClient.PutAsJsonAsync($"{httpClient.BaseAddress}{id}", dish);
+            
+            if (!updateResponse.IsSuccessStatusCode)
+            {
+                return new ResponseData<Dish>
+                {
+                    Success = false,
+                    ErrorMessage = $"Ошибка обновления блюда: {updateResponse.StatusCode}"
+                };
+            }
+
+            // Если есть изображение, загружаем его
+            if (image != null)
+            {
+                using var content = new MultipartFormDataContent();
+                using var stream = image.OpenReadStream();
+                var streamContent = new StreamContent(stream);
+                streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(image.ContentType);
+                content.Add(streamContent, "image", image.FileName);
+
+                await httpClient.PostAsync($"{httpClient.BaseAddress}{id}", content);
+            }
+
+            // Получаем обновленное блюдо
+            var getResponse = await httpClient.GetAsync($"{httpClient.BaseAddress}{id}");
+            if (getResponse.IsSuccessStatusCode)
+            {
+                var updatedDish = await getResponse.Content.ReadFromJsonAsync<Dish>();
+                return new ResponseData<Dish>
+                {
+                    Success = true,
+                    Data = updatedDish
+                };
+            }
+
+            return new ResponseData<Dish>
+            {
+                Success = true,
+                Data = dish
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ResponseData<Dish>
+            {
+                Success = false,
+                ErrorMessage = $"Ошибка при обновлении блюда: {ex.Message}"
+            };
+        }
     }
 
     public async Task<ResponseData<bool>> DeleteProductAsync(int id)
     {
-        return new ResponseData<bool>
+        try
         {
-            Success = false,
-            ErrorMessage = "Метод не реализован в API-сервисе"
-        };
+            var result = await httpClient.DeleteAsync($"{httpClient.BaseAddress}{id}");
+
+            if (result.IsSuccessStatusCode)
+            {
+                return new ResponseData<bool>
+                {
+                    Success = true,
+                    Data = true
+                };
+            }
+
+            return new ResponseData<bool>
+            {
+                Success = false,
+                Data = false,
+                ErrorMessage = result.StatusCode == System.Net.HttpStatusCode.NotFound 
+                    ? "Блюдо не найдено" 
+                    : $"Ошибка удаления: {result.StatusCode}"
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ResponseData<bool>
+            {
+                Success = false,
+                Data = false,
+                ErrorMessage = $"Ошибка при удалении блюда: {ex.Message}"
+            };
+        }
     }
     
 }
 
 
 //Интерфейс IProductService содержит методы для CRUD-операций.
-// В рамках данной лабораторной работы используется только метод
-// получения списка продуктов.
-// Остальные методы реализованы в виде заглушек,
-// так как соответствующие endpoints API не используются в Kolbasin_lab1.
+// Все методы реализованы для работы с API через HTTP клиент.
