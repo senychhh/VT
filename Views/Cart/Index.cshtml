@@ -1,0 +1,68 @@
+@using Domain.Models
+@model Dictionary<int, CartItem>
+
+@{
+    ViewData["Title"] = "Корзина";
+}
+
+<h2 class="m-2">Ваша корзина:</h2>
+
+@if (Model == null || Model.Count == 0)
+{
+    <h2 class="m-2">Корзина пуста</h2>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Изображение</th>
+                <th>Название</th>
+                <th>Описание</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Сумма</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.Value.Item.Image))
+                        {
+                            <img src="/@item.Value.Item.Image" alt="@item.Value.Item.Name" class="dish-image-admin" />
+                        }
+                        else
+                        {
+                            <div class="dish-image-admin bg-light d-flex align-items-center justify-content-center">
+                                <span class="text-muted small">Нет изображения</span>
+                            </div>
+                        }
+                    </td>
+                    <td>@item.Value.Item.Name</td>
+                    <td>@item.Value.Item.Description</td>
+                    <td>@item.Value.Item.Price.ToString("C")</td>
+                    <td>@item.Value.Qty</td>
+                    <td>@((item.Value.Item.Price * item.Value.Qty).ToString("C"))</td>
+                    <td>
+                        <a class="btn btn-danger" asp-action="Remove" asp-controller="Cart" asp-route-id="@item.Value.Item.Id">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" class="text-end"><strong>Итого:</strong></td>
+                <td><strong>@Model.Values.Sum(item => item.Item.Price * item.Qty).ToString("C")</strong></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+}
+
+<a asp-controller="Product" asp-action="Index" class="btn btn-secondary">Продолжить покупки</a>
+

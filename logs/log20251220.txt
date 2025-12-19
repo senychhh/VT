@@ -1,0 +1,9 @@
+2025-12-20 00:01:18.615 +03:00 [INF] ---> Request /Admin/Dishes returns 302
+2025-12-20 00:01:18.646 +03:00 [INF] ---> Request /lib/bootstrap/dist/css/bootstrap.min.46ein0sx1k.css returns 304
+2025-12-20 00:01:18.655 +03:00 [INF] ---> Request /js/site.xtxxf3hu2r.js returns 304
+2025-12-20 00:01:18.673 +03:00 [INF] ---> Request /lib/jquery/dist/jquery.min.o1o13a6vjx.js returns 304
+2025-12-20 00:01:18.698 +03:00 [INF] ---> Request /lib/bootstrap/dist/js/bootstrap.bundle.min.493y06b0oq.js returns 304
+2025-12-20 00:01:20.723 +03:00 [INF] ---> Request /lib/bootstrap/dist/css/bootstrap.min.46ein0sx1k.css returns 304
+2025-12-20 00:01:20.745 +03:00 [INF] ---> Request /js/site.xtxxf3hu2r.js returns 304
+2025-12-20 00:01:20.745 +03:00 [INF] ---> Request /lib/jquery/dist/jquery.min.o1o13a6vjx.js returns 304
+2025-12-20 00:01:20.745 +03:00 [INF] ---> Request /lib/bootstrap/dist/js/bootstrap.bundle.min.493y06b0oq.js returns 304

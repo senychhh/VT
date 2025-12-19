@@ -9,7 +9,9 @@ namespace Kolbasin.API.Data
         {
             using var scope = app.Services.CreateScope();
             using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            await context.Database.MigrateAsync();
+            
+            // Создаем базу данных, если она не существует
+            await context.Database.EnsureCreatedAsync();
 
             // Проверяем, есть ли уже данные
             if (await context.Categories.AnyAsync()) return;

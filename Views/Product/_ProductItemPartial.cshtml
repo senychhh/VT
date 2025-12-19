@@ -31,7 +31,7 @@
             <strong>@Model.Price.ToString("C")</strong>
         </div>
 
-        <a href="@Url.Action("Add", "Cart", new { id = Model.Id })"
+        <a href="@Url.Action("Add", "Cart", new { id = Model.Id, returnUrl = Context.Request.Path + Context.Request.QueryString })"
            class="btn btn-primary w-100">
             В корзину
         </a>

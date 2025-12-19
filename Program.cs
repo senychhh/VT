@@ -4,6 +4,14 @@ using Kolbasin_lab1.Data;
 using System.Security.Claims;
 using Kolbasin_lab1.Services;
 using System.Globalization;
+using Serilog;
+using Kolbasin_lab1.Middleware;
+
+// Настройка Serilog
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 var cultureInfo = new CultureInfo("be-BY");
@@ -24,6 +32,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddRazorPages();
+
+// Добавление сервисов для работы с сессией
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     {
@@ -58,6 +70,8 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseSession();
+app.UseFileLogger();
 
 app.UseAuthentication();
 app.UseAuthorization();

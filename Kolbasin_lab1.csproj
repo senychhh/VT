@@ -5,7 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Kolbasin_lab1-083af98d-59b1-4a70-9f6d-5443c40f6ec7</UserSecretsId>
-        <UseAppHost>false</UseAppHost>
+    <UseAppHost>false</UseAppHost>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +25,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.11" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.11" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,9 +35,12 @@
   </ItemGroup>
 
   <ItemGroup>
-  <Compile Remove="Kolbasin.Domain/**" />
-  <Compile Remove="Kolbasin.API/**" />
-</ItemGroup>
+    <Compile Remove="Kolbasin.Domain/**" />
+    <Compile Remove="Kolbasin.API/**" />
+    <Compile Remove="Kolbasin.Tests/**" />
+    <None Remove="Kolbasin.Tests/**" />
+    <Content Remove="Kolbasin.Tests/**" />
+  </ItemGroup>
 
 
 </Project>

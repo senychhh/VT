@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Kolbasin_lab1.Extensions;
+using Domain.Models;
 
 namespace Kolbasin_lab1.ViewComponents 
 {
@@ -6,7 +8,8 @@ namespace Kolbasin_lab1.ViewComponents
     {
         public IViewComponentResult Invoke() 
         {
-            return View();
+            var cart = HttpContext.Session.Get<Cart>("cart") ?? new Cart();
+            return View(cart);
         }
     }
 }
