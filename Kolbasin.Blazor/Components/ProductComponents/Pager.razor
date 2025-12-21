@@ -1,0 +1,67 @@
+@namespace Kolbasin.Blazor.Components.ProductComponents
+@implements IDisposable
+@rendermode InteractiveServer
+@using Kolbasin.Blazor.Services
+@using Domain.Entities
+
+<div class="btn-group" role="group" aria-label="Pager">
+    <!-- Кнопка Previous -->
+    <button type="button" 
+            class="btn btn-outline-primary @(previousEnabled ? "" : "disabled")"
+            @onclick="@(async () => await OnPageSelected(ProductService.CurrentPage - 1))"
+            disabled="@(!previousEnabled)">
+        <span aria-hidden="true">&laquo;</span>
+    </button>
+    
+    @for (int i = 1; i <= ProductService.TotalPages; i++)
+    {
+        var temp = i;
+        <button type="button" 
+                class="btn btn-outline-primary @(IsActive(temp) ? "active" : "")"
+                @onclick="@(async () => await OnPageSelected(temp))">
+            @temp
+        </button>
+    }
+    
+    <!-- Кнопка Next -->
+    <button type="button" 
+            class="btn btn-outline-primary @(nextEnabled ? "" : "disabled")"
+            @onclick="@(async () => await OnPageSelected(ProductService.CurrentPage + 1))"
+            disabled="@(!nextEnabled)">
+        <span aria-hidden="true">&raquo;</span>
+    </button>
+</div>
+
+@code {
+    [CascadingParameter]
+    public IProductService<Dish> ProductService { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        ProductService.ListChanged += StateHasChanged;
+    }
+
+    // Кнопка Previous доступна?
+    bool previousEnabled => ProductService.CurrentPage != 1;
+
+    // Кнопка Next доступна
+    bool nextEnabled => ProductService.CurrentPage != ProductService.TotalPages;
+
+    // Это текущая страница?
+    bool IsActive(int pageNo) => pageNo == ProductService.CurrentPage;
+
+    // Обработчик клика кнопки
+    async Task OnPageSelected(int pageNo)
+    {
+        if (pageNo >= 1 && pageNo <= ProductService.TotalPages)
+        {
+            await ProductService.GetProducts(pageNo, 3);
+        }
+    }
+
+    public void Dispose()
+    {
+        ProductService.ListChanged -= StateHasChanged;
+    }
+}
+

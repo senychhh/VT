@@ -1,0 +1,33 @@
+@page "/products"
+@rendermode InteractiveServer
+@using Kolbasin.Blazor.Services
+@using Kolbasin.Blazor.Components.ProductComponents
+@using Domain.Entities
+@using Domain.Models
+
+<PageTitle>Список блюд</PageTitle>
+
+<CascadingValue Value="ProductService">
+    <DishesList DishSelected="ShowDetails" />
+    <Pager />
+</CascadingValue>
+
+<DishDetails Dish="SelectedDish" />
+
+@code {
+    [Inject] IProductService<Dish> ProductService { get; set; } = null!;
+    
+    public Dish? SelectedDish { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ProductService.GetProducts(1, 3);
+    }
+
+    void ShowDetails(int id)
+    {
+        SelectedDish = ProductService.Products.FirstOrDefault(d => d.Id == id);
+        StateHasChanged();
+    }
+}
+

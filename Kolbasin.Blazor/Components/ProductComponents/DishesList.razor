@@ -1,0 +1,58 @@
+@namespace Kolbasin.Blazor.Components.ProductComponents
+@implements IDisposable
+@rendermode InteractiveServer
+@using Kolbasin.Blazor.Services
+@using Domain.Entities
+
+<h3>Блюда дня</h3>
+
+@if (ProductService.Products != null && ProductService.Products.Count() != 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in ProductService.Products)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>
+                        <button class="btn btn-outline-dark"
+                                @onclick="@(() => OnDishSelected(item.Id))">
+                            Подробно
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [CascadingParameter]
+    public IProductService<Dish> ProductService { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<int> DishSelected { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ProductService.ListChanged += StateHasChanged;
+        await Task.CompletedTask;
+    }
+
+    public async void OnDishSelected(int id)
+    {
+        await DishSelected.InvokeAsync(id);
+    }
+
+    public void Dispose()
+    {
+        ProductService.ListChanged -= StateHasChanged;
+    }
+}
+

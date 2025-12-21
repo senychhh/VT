@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Kolbasin.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+63e446efd8f1ca6d72158904f3830fc44cda9726")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f5a321dc8b3108f03f8bffc6cb87a52d0e3590b5")]
 [assembly: System.Reflection.AssemblyProductAttribute("Kolbasin.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Kolbasin.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
