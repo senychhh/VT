@@ -53,7 +53,14 @@
                 <td>
                    @if (!string.IsNullOrEmpty(item.Image))
                    {
-                       <img src="/@item.Image"
+                       var imageUrl = item.Image;
+                       // Если это относительный путь, добавляем ~/
+                       if (!imageUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) && 
+                           !imageUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                       {
+                           imageUrl = "~/" + imageUrl.TrimStart('/');
+                       }
+                       <img src="@Url.Content(imageUrl)"
                             alt="@item.Name"
                             class="dish-image-admin" />
                    }

@@ -53,9 +53,16 @@
                 <input asp-for="Image" class="form-control" type="file" accept="image/*" />
                 @if (!string.IsNullOrEmpty(Model.Dish.Image))
                 {
+                    var imageUrl = Model.Dish.Image;
+                    // Если это относительный путь, добавляем ~/
+                    if (!imageUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) && 
+                        !imageUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                    {
+                        imageUrl = "~/" + imageUrl.TrimStart('/');
+                    }
                     <div class="mt-2">
                         <small class="text-muted">Текущее изображение:</small><br />
-                        <img src="@Model.Dish.Image" alt="@Model.Dish.Name" style="max-width: 200px; max-height: 200px;" />
+                        <img src="@Url.Content(imageUrl)" alt="@Model.Dish.Name" style="max-width: 200px; max-height: 200px;" />
                     </div>
                 }
             </div>

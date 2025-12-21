@@ -5,7 +5,24 @@
 
     @if (!string.IsNullOrEmpty(Model.Image))
     {
-        <img src="~/@Model.Image"
+        var imageUrl = Model.Image;
+        // Если это полный URL с localhost:9999, конвертируем в относительный путь
+        if (imageUrl.StartsWith("http://localhost:9999/", StringComparison.OrdinalIgnoreCase) || 
+            imageUrl.StartsWith("https://localhost:9999/", StringComparison.OrdinalIgnoreCase))
+        {
+            // Извлекаем относительный путь из полного URL
+            var uri = new Uri(imageUrl);
+            imageUrl = uri.PathAndQuery.TrimStart('/');
+        }
+        
+        // Если это относительный путь (не начинается с http), добавляем ~/
+        if (!imageUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) && 
+            !imageUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            imageUrl = "~/" + imageUrl.TrimStart('/');
+        }
+        
+        <img src="@Url.Content(imageUrl)"
              class="card-img-top dish-image-catalog"
              alt="@Model.Name" />
     }

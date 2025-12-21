@@ -1,5 +1,6 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Kolbasin.API.Data
 {
@@ -14,7 +15,7 @@ namespace Kolbasin.API.Data
             await context.Database.EnsureCreatedAsync();
 
             // Проверяем, есть ли уже данные
-            if (await context.Categories.AnyAsync()) return;
+            var hasData = await context.Categories.AnyAsync();
 
             var categories = new[]
             {
@@ -26,12 +27,14 @@ namespace Kolbasin.API.Data
                 new Category {Name="Напитки", NormalizedName="drinks"},
             };
 
-            await context.Categories.AddRangeAsync(categories);
-            await context.SaveChangesAsync();
-
+            if (!hasData)
+            {
+                await context.Categories.AddRangeAsync(categories);
+                await context.SaveChangesAsync();
+            }
 
             // Сохраняем Id категорий в словарь для безопасного доступа
-            var categoryIds = categories.ToDictionary(c => c.NormalizedName, c => c.Id);
+            var categoryIds = (await context.Categories.ToListAsync()).ToDictionary(c => c.NormalizedName, c => c.Id);
             var dishes = new[]
             { new Dish
                 {
@@ -224,10 +227,76 @@ namespace Kolbasin.API.Data
                     CategoryId = categoryIds["drinks"]
                 }
             };
-            await context.Dishes.AddRangeAsync(dishes);
-            await context.SaveChangesAsync();
+            
+            if (!hasData)
+            {
+                await context.Dishes.AddRangeAsync(dishes);
+                await context.SaveChangesAsync();
+            }
 
+            // Обновляем пути к изображениям для существующих блюд, если они отсутствуют
+            await UpdateMissingImagePathsAsync(context);
+        }
 
+        private static async Task UpdateMissingImagePathsAsync(AppDbContext context)
+        {
+            // Словарь соответствия названий блюд и путей к изображениям
+            var imagePaths = new Dictionary<string, string>
+            {
+                { "Суп-харчо", "img/dishes/Харчо.webp" },
+                { "Борщ", "img/dishes/Борщ.jpeg" },
+                { "Салат с тунцом", "img/dishes/СалатСТунцом.jpg" },
+                { "Цезарь", "img/dishes/Цезарь.jpeg" },
+                { "Оливье", "img/dishes/Оливье.jpeg" },
+                { "Брускетта", "img/dishes/Брускетта.jpg" },
+                { "Крылышки Баффало", "img/dishes/Крылышки.jpeg" },
+                { "Лагман", "img/dishes/Лагман.jpg" },
+                { "Греческий салат", "img/dishes/Греческий.webp" },
+                { "Креветки в кляре", "img/dishes/Креветки.jpeg" },
+                { "Том Ям", "img/dishes/ТомЯм.webp" },
+                { "Мини-бургеры", "img/dishes/МиниБургеры.jpeg" },
+                { "Мисо-суп", "img/dishes/МисоСуп.webp" },
+                { "Пина Колада", "img/dishes/ПинаКолада.jpg" },
+                { "Мохито", "img/dishes/Мохито.webp" },
+                { "Чизкейк", "img/dishes/Чизкейк.webp" },
+                { "Тирамису", "img/dishes/Тирамису.jpg" },
+                { "Крем-суп из тыквы", "img/dishes/КремСупИзТыквы.jpg" },
+                { "Лимонад", "img/dishes/Лимонад.jpeg" },
+                { "Наполеон", "img/dishes/Наполеон.jpeg" },
+                { "Айс-ти", "img/dishes/АйсТи.jpg" }
+            };
+
+            var dishes = await context.Dishes.ToListAsync();
+            bool hasChanges = false;
+
+            foreach (var dish in dishes)
+            {
+                // Если путь к изображению отсутствует или пустой, и есть соответствие в словаре
+                if ((string.IsNullOrEmpty(dish.Image) || 
+                     dish.Image.StartsWith("http://localhost:9999/", StringComparison.OrdinalIgnoreCase) ||
+                     dish.Image.StartsWith("https://localhost:9999/", StringComparison.OrdinalIgnoreCase)) &&
+                    imagePaths.TryGetValue(dish.Name, out var imagePath))
+                {
+                    // Если это полный URL, извлекаем относительный путь
+                    if (dish.Image != null && 
+                        (dish.Image.StartsWith("http://localhost:9999/", StringComparison.OrdinalIgnoreCase) ||
+                         dish.Image.StartsWith("https://localhost:9999/", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        var uri = new Uri(dish.Image);
+                        dish.Image = uri.PathAndQuery.TrimStart('/');
+                    }
+                    else
+                    {
+                        dish.Image = imagePath;
+                    }
+                    hasChanges = true;
+                }
+            }
+
+            if (hasChanges)
+            {
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

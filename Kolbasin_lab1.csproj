@@ -38,8 +38,11 @@
     <Compile Remove="Kolbasin.Domain/**" />
     <Compile Remove="Kolbasin.API/**" />
     <Compile Remove="Kolbasin.Tests/**" />
+    <Compile Remove="Kolbasin.Blazor/**" />
     <None Remove="Kolbasin.Tests/**" />
+    <None Remove="Kolbasin.Blazor/**" />
     <Content Remove="Kolbasin.Tests/**" />
+    <Content Remove="Kolbasin.Blazor/**" />
   </ItemGroup>
 
 

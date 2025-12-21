@@ -94,6 +94,13 @@ namespace Kolbasin.API.Controllers
                 return BadRequest();
             }
 
+            // Сохраняем старое значение Image, если новое пустое
+            var existingDish = await _context.Dishes.FindAsync(id);
+            if (existingDish != null && string.IsNullOrEmpty(dish.Image))
+            {
+                dish.Image = existingDish.Image;
+            }
+
             _context.Entry(dish).State = EntityState.Modified;
 
             try
@@ -127,7 +134,8 @@ namespace Kolbasin.API.Controllers
             // если было старое изображение — удалим файл
             TryDeleteImageFile(dish.Image);
 
-            var imagesPath = Path.Combine(_env.WebRootPath, "Images");
+            // Сохраняем в img/dishes/ вместо Images/
+            var imagesPath = Path.Combine(_env.WebRootPath, "img", "dishes");
             Directory.CreateDirectory(imagesPath);
 
             var randomName = Path.GetRandomFileName();
@@ -140,11 +148,12 @@ namespace Kolbasin.API.Controllers
                 await image.CopyToAsync(stream);
             }
 
-            var url = $"{Request.Scheme}://{Request.Host}/Images/{fileName}";
-            dish.Image = url;
+            // Сохраняем относительный путь вместо полного URL
+            var relativePath = $"img/dishes/{fileName}";
+            dish.Image = relativePath;
 
             await _context.SaveChangesAsync();
-            return Ok(url);
+            return Ok(relativePath);
         }
 
         // POST: api/Dishes
@@ -187,19 +196,62 @@ namespace Kolbasin.API.Controllers
             {
                 if (string.IsNullOrWhiteSpace(imageUrl)) return;
 
-                // ожидаем, что URL содержит "/Images/filename.ext"
-                var idx = imageUrl.LastIndexOf("/Images/", StringComparison.OrdinalIgnoreCase);
-                if (idx < 0) return;
+                string? fileName = null;
+                string? folderPath = null;
 
-                var fileName = imageUrl.Substring(idx + "/Images/".Length);
-                if (string.IsNullOrWhiteSpace(fileName)) return;
+                // Проверяем, это полный URL или относительный путь
+                if (imageUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || 
+                    imageUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Полный URL - извлекаем путь
+                    var uri = new Uri(imageUrl);
+                    var pathAndQuery = uri.PathAndQuery.TrimStart('/');
+                    
+                    // Проверяем разные варианты путей
+                    if (pathAndQuery.StartsWith("Images/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        fileName = Path.GetFileName(pathAndQuery.Substring("Images/".Length));
+                        folderPath = Path.Combine(_env.WebRootPath, "Images");
+                    }
+                    else if (pathAndQuery.StartsWith("img/dishes/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        fileName = Path.GetFileName(pathAndQuery.Substring("img/dishes/".Length));
+                        folderPath = Path.Combine(_env.WebRootPath, "img", "dishes");
+                    }
+                }
+                else
+                {
+                    // Относительный путь
+                    if (imageUrl.StartsWith("img/dishes/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        fileName = Path.GetFileName(imageUrl.Substring("img/dishes/".Length));
+                        folderPath = Path.Combine(_env.WebRootPath, "img", "dishes");
+                    }
+                    else if (imageUrl.StartsWith("Images/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        fileName = Path.GetFileName(imageUrl.Substring("Images/".Length));
+                        folderPath = Path.Combine(_env.WebRootPath, "Images");
+                    }
+                    else if (imageUrl.StartsWith("/img/dishes/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        fileName = Path.GetFileName(imageUrl.Substring("/img/dishes/".Length));
+                        folderPath = Path.Combine(_env.WebRootPath, "img", "dishes");
+                    }
+                    else if (imageUrl.StartsWith("/Images/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        fileName = Path.GetFileName(imageUrl.Substring("/Images/".Length));
+                        folderPath = Path.Combine(_env.WebRootPath, "Images");
+                    }
+                }
 
-                // защита от ".."
-                fileName = Path.GetFileName(fileName);
-
-                var path = Path.Combine(_env.WebRootPath, "Images", fileName);
-                if (System.IO.File.Exists(path))
-                    System.IO.File.Delete(path);
+                if (fileName != null && folderPath != null)
+                {
+                    // защита от ".."
+                    fileName = Path.GetFileName(fileName);
+                    var path = Path.Combine(folderPath, fileName);
+                    if (System.IO.File.Exists(path))
+                        System.IO.File.Delete(path);
+                }
             }
             catch
             {
