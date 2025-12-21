@@ -206,6 +206,67 @@ public class ApiProductService(HttpClient httpClient)
             };
         }
     }
+
+    public async Task<ResponseData<ProductListModel<Dish>>> GetDeletedProductsAsync(int pageNo = 1)
+    {
+        var baseUri = httpClient.BaseAddress?.ToString().TrimEnd('/') ?? "";
+        var uri = $"{baseUri}/deleted";
+        
+        var queryData = new Dictionary<string, string>
+        {
+            ["pageNo"] = pageNo.ToString()
+        };
+
+        var query = QueryString.Create(queryData);
+        var result = await httpClient.GetAsync(uri + query.Value);
+
+        if (result.IsSuccessStatusCode)
+        {
+            return await result.Content
+                .ReadFromJsonAsync<ResponseData<ProductListModel<Dish>>>();
+        }
+
+        return new ResponseData<ProductListModel<Dish>>
+        {
+            Success = false,
+            ErrorMessage = "Ошибка чтения API"
+        };
+    }
+
+    public async Task<ResponseData<bool>> RestoreProductAsync(int id)
+    {
+        try
+        {
+            var result = await httpClient.PostAsync($"{httpClient.BaseAddress}{id}/restore", null);
+
+            if (result.IsSuccessStatusCode)
+            {
+                return new ResponseData<bool>
+                {
+                    Success = true,
+                    Data = true
+                };
+            }
+
+            return new ResponseData<bool>
+            {
+                Success = false,
+                Data = false,
+                ErrorMessage = result.StatusCode == System.Net.HttpStatusCode.NotFound 
+                    ? "Блюдо не найдено" 
+                    : $"Ошибка восстановления: {result.StatusCode}"
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ResponseData<bool>
+            {
+                Success = false,
+                Data = false,
+                ErrorMessage = $"Ошибка при восстановлении блюда: {ex.Message}"
+            };
+        }
+    }
     
 }
 

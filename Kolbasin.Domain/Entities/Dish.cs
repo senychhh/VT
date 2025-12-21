@@ -26,5 +26,11 @@ namespace Domain.Entities
 
         /// Навигационное свойство - категория блюда
         public Category ?Category { get; set; }
+
+        /// Признак удаления (мягкое удаление)
+        public bool IsDeleted { get; set; } = false;
+
+        /// Дата и время удаления
+        public DateTime? DeletedAt { get; set; }
     }
 }

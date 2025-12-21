@@ -47,5 +47,9 @@ namespace Kolbasin_lab1.Services
         Task<ResponseData<Dish>> UpdateProductAsync(int id, Dish dish, IFormFile? file);
 
         Task<ResponseData<bool>> DeleteProductAsync(int id);
-}
+
+        Task<ResponseData<ProductListModel<Dish>>> GetDeletedProductsAsync(int pageNo = 1);
+
+        Task<ResponseData<bool>> RestoreProductAsync(int id);
+    }
 }

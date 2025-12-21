@@ -35,11 +35,11 @@ namespace Kolbasin.API.Controllers
             // объект результата
             var result = new ResponseData<ProductListModel<Dish>>();
 
-            // базовый запрос
+            // базовый запрос - исключаем удаленные блюда
             var query = _context.Dishes
                 .Include(d => d.Category)
-                .Where(d => string.IsNullOrEmpty(category)
-                    || d.Category != null &&  d.Category.NormalizedName == category);
+                .Where(d => !d.IsDeleted && (string.IsNullOrEmpty(category)
+                    || d.Category != null &&  d.Category.NormalizedName == category));
 
             // общее количество страниц
             int totalPages = (int)Math.Ceiling(await query.CountAsync() / (double)pageSize);
@@ -76,7 +76,7 @@ namespace Kolbasin.API.Controllers
         {
             var dish = await _context.Dishes.FindAsync(id);
 
-            if (dish == null)
+            if (dish == null || dish.IsDeleted)
             {
                 return NotFound();
             }
@@ -94,12 +94,22 @@ namespace Kolbasin.API.Controllers
                 return BadRequest();
             }
 
-            // Сохраняем старое значение Image, если новое пустое
+            // Сохраняем старые значения важных полей
             var existingDish = await _context.Dishes.FindAsync(id);
-            if (existingDish != null && string.IsNullOrEmpty(dish.Image))
+            if (existingDish == null || existingDish.IsDeleted)
+            {
+                return NotFound();
+            }
+
+            // Сохраняем старое значение Image, если новое пустое
+            if (string.IsNullOrEmpty(dish.Image))
             {
                 dish.Image = existingDish.Image;
             }
+
+            // Сохраняем значения IsDeleted и DeletedAt (не позволяем изменять их через PUT)
+            dish.IsDeleted = existingDish.IsDeleted;
+            dish.DeletedAt = existingDish.DeletedAt;
 
             _context.Entry(dish).State = EntityState.Modified;
 
@@ -172,18 +182,70 @@ namespace Kolbasin.API.Controllers
         public async Task<IActionResult> DeleteDish(int id)
         {
             var dish = await _context.Dishes.FindAsync(id);
-            if (dish == null)
+            if (dish == null || dish.IsDeleted)
             {
                 return NotFound();
             }
 
-            // Удаляем файл изображения перед удалением блюда
-            TryDeleteImageFile(dish.Image);
+            // Мягкое удаление - помечаем как удаленное вместо физического удаления
+            dish.IsDeleted = true;
+            dish.DeletedAt = DateTime.UtcNow;
 
-            _context.Dishes.Remove(dish);
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // GET: api/Dishes/deleted - получить список удаленных блюд
+        [HttpGet("deleted")]
+        public async Task<ActionResult<ResponseData<ProductListModel<Dish>>>> GetDeletedDishes(
+            int pageNo = 1,
+            int pageSize = 10)
+        {
+            var result = new ResponseData<ProductListModel<Dish>>();
+
+            // Запрос только удаленных блюд
+            var query = _context.Dishes
+                .Include(d => d.Category)
+                .Where(d => d.IsDeleted)
+                .OrderByDescending(d => d.DeletedAt);
+
+            int totalPages = (int)Math.Ceiling(await query.CountAsync() / (double)pageSize);
+
+            if (pageNo > totalPages && totalPages > 0)
+                pageNo = totalPages;
+
+            var items = await query
+                .Skip((pageNo - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            result.Data = new ProductListModel<Dish>
+            {
+                Items = items,
+                CurrentPage = pageNo,
+                TotalPages = totalPages
+            };
+
+            return Ok(result);
+        }
+
+        // POST: api/Dishes/{id}/restore - восстановить удаленное блюдо
+        [HttpPost("{id}/restore")]
+        public async Task<IActionResult> RestoreDish(int id)
+        {
+            var dish = await _context.Dishes.FindAsync(id);
+            if (dish == null || !dish.IsDeleted)
+            {
+                return NotFound();
+            }
+
+            dish.IsDeleted = false;
+            dish.DeletedAt = null;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(dish);
         }
 
         private bool DishExists(int id)
